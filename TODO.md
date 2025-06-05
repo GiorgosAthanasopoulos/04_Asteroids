@@ -1,12 +1,6 @@
-# Goals
-- 2D physics-based character controller
-	- Manage 2D vectors and rotations in free space
-- Make a main menu and a restart menu.
-
 # TODOs
 ## Player
-- Create a player ship.
-- The ship should be able to rotate and thrust.
+- The ship should be able to thrust.
 	- Thrust will accelerate the ship “forward” in the direction that it is facing.
 
 ## Bullets
@@ -25,6 +19,9 @@
 
 ## UI
 - Add menus and UI.
+
+## Settings
+- Save and load settings
 
 ## SFX
 - Add sound effects and particle effects.

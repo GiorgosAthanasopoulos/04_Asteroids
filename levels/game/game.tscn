@@ -1,0 +1,76 @@
+[gd_scene load_steps=4 format=3 uid="uid://direj2fajrp"]
+
+[ext_resource type="Script" uid="uid://bdkgjvp6es4sp" path="res://levels/game/scripts/game.gd" id="1_2oeyt"]
+[ext_resource type="PackedScene" uid="uid://j2da0afv1n12" path="res://characters/player/player.tscn" id="1_sg147"]
+[ext_resource type="Script" uid="uid://5k4vnmafdb38" path="res://levels/game/scripts/escape_menu.gd" id="3_71jyj"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_2oeyt")
+
+[node name="UI" type="Node2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="UI"]
+layer = -1
+
+[node name="ColorRect" type="ColorRect" parent="UI/CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Entities" type="Node2D" parent="."]
+
+[node name="Player" parent="Entities" instance=ExtResource("1_sg147")]
+position = Vector2(640, 355)
+
+[node name="EscapeMenu" type="Node2D" parent="."]
+script = ExtResource("3_71jyj")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="EscapeMenu"]
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="EscapeMenu/CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0.262745)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="EscapeMenu/CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="EscapeMenu/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 100
+text = "Paused"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="EscapeMenu/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "Resume"
+
+[node name="SettingsButton" type="Button" parent="EscapeMenu/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "Settings"
+
+[node name="QuitToMenuButton" type="Button" parent="EscapeMenu/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "Quit to Main Menu"
+
+[node name="QuitToDesktopButton" type="Button" parent="EscapeMenu/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "Quit to Desktop"
+
+[connection signal="pressed" from="EscapeMenu/CanvasLayer/VBoxContainer/ResumeButton" to="EscapeMenu" method="_on_resume_button_pressed"]
+[connection signal="pressed" from="EscapeMenu/CanvasLayer/VBoxContainer/SettingsButton" to="EscapeMenu" method="_on_settings_button_pressed"]
+[connection signal="pressed" from="EscapeMenu/CanvasLayer/VBoxContainer/QuitToMenuButton" to="EscapeMenu" method="_on_quit_to_menu_button_pressed"]
+[connection signal="pressed" from="EscapeMenu/CanvasLayer/VBoxContainer/QuitToDesktopButton" to="EscapeMenu" method="_on_quit_to_desktop_button_pressed"]
