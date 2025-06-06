@@ -1,0 +1,97 @@
+[gd_scene load_steps=3 format=3 uid="uid://bfvp6u431yrrx"]
+
+[ext_resource type="Script" uid="uid://cbiwitfq7xm7t" path="res://ui/settings_menu/scripts/settings_menu.gd" id="1_41xuy"]
+[ext_resource type="PackedScene" uid="uid://qbfxu0qmmgfk" path="res://ui/components/bg/bg.tscn" id="2_kvsec"]
+
+[node name="SettingsMenu" type="Node2D"]
+script = ExtResource("1_41xuy")
+
+[node name="UI" type="Node2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="UI"]
+layer = -1
+
+[node name="ColorRect" type="ColorRect" parent="UI/CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="BackButton" type="Button" parent="UI/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "Back"
+
+[node name="TitleLabel" type="Label" parent="UI/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 100
+text = "Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MasterVolumeLabel" type="Label" parent="UI/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "Master Volume"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MasterVolumeSlider" type="HSlider" parent="UI/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+min_value = -80.0
+max_value = 6.0
+
+[node name="MusicVolumeLabel" type="Label" parent="UI/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "Music Volume"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MusicVolumeSlider" type="HSlider" parent="UI/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+min_value = -80.0
+max_value = 6.0
+
+[node name="SoundVolumeLabel" type="Label" parent="UI/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "Sound Volume"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SoundVolumeSlider" type="HSlider" parent="UI/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+min_value = -80.0
+max_value = 6.0
+
+[node name="FullscreenToggle" type="CheckButton" parent="UI/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Fullscreen"
+
+[node name="ResetButton" type="Button" parent="UI/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "Reset to Default"
+
+[node name="BG" parent="UI/CanvasLayer" instance=ExtResource("2_kvsec")]
+
+[connection signal="pressed" from="UI/CanvasLayer/VBoxContainer/BackButton" to="." method="_on_button_pressed"]
+[connection signal="value_changed" from="UI/CanvasLayer/VBoxContainer/MasterVolumeSlider" to="." method="_on_master_volume_slider_value_changed"]
+[connection signal="value_changed" from="UI/CanvasLayer/VBoxContainer/MusicVolumeSlider" to="." method="_on_music_volume_slider_value_changed"]
+[connection signal="value_changed" from="UI/CanvasLayer/VBoxContainer/SoundVolumeSlider" to="." method="_on_sound_volume_slider_value_changed"]
+[connection signal="toggled" from="UI/CanvasLayer/VBoxContainer/FullscreenToggle" to="." method="_on_fullscreen_toggle_toggled"]
+[connection signal="pressed" from="UI/CanvasLayer/VBoxContainer/ResetButton" to="." method="_on_reset_button_pressed"]
