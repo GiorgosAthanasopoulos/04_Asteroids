@@ -16,7 +16,9 @@ var _bullet_counter: int = 0
 
 
 func _ready() -> void:
-	Events.player_died.connect(_on_player_died)
+	var err: Error = Events.player_died.connect(_on_player_died) as Error
+	if err != OK:
+		print("Failed to connect player_died signal in player.gd: ", err)
 
 
 func _physics_process(delta: float) -> void:

@@ -21,10 +21,14 @@ func _process(_delta: float) -> void:
 
 func goto_main_menu() -> void:
     if State.in_settings_from_main:
-        get_tree().change_scene_to_file('res://ui/main_menu/main_menu.tscn')
+        var err: Error = get_tree().change_scene_to_file('res://ui/main_menu/main_menu.tscn')
+        if err != OK:
+            print("failed to go to main menu from settings menu, ", error_string(err))
         State.in_settings_from_main = false
     else:
-        get_tree().change_scene_to_file('res://levels/game/game.tscn')
+        var err: Error = get_tree().change_scene_to_file('res://levels/game/game.tscn')
+        if err != OK:
+            print("failed to go to game scene from settings menu, ", error_string(err))
 
 
 func _on_master_volume_slider_value_changed(value: float) -> void:
