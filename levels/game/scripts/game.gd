@@ -6,13 +6,15 @@ extends Node2D
 # TODO: at random? intervals spawn new asteroids from different screen edges
 
 
+@export var asteroid: PackedScene = preload('res://objects/asteroid/asteroid.tscn')
+@export var asteroid_spawn_delay: Vector2 = Vector2(0.1, 1) # min, max
+
+
 @onready var lifes_label: Label = $UI/CanvasLayer/LifesLabel
+@onready var escape_menu: CanvasLayer = $EscapeMenu/CanvasLayer
 
 
 var _player_lifes: int = 3
-
-
-@onready var escape_menu: CanvasLayer = $EscapeMenu/CanvasLayer
 
 
 func _ready() -> void:
@@ -20,7 +22,7 @@ func _ready() -> void:
     if err != OK:
         print("Failed to connect player_hit in game.gd: ", error_string(err))
 
-    err = Events.asteroid_hit.connect(_on_asteroid_hit) as Error
+    err = Events.asteroid_died.connect(_on_asteroid_died) as Error
     if err != OK:
         print("Failed to connect asteroid_hit in game.gd: ", error_string(err))
 
@@ -40,7 +42,7 @@ func _on_player_hit() -> void:
         Events.player_died.emit()
 
 
-func _on_asteroid_hit(_score: int) -> void:
+func _on_asteroid_died(_score: int) -> void:
     # TODO: implement game.gd::_on_asteroid_hit
     pass
 
@@ -62,3 +64,10 @@ func get_random_edge_spawn_position() -> Vector2:
         spawn_pos = Vector2(viewport_size.x, vertical_random)
 
     return spawn_pos
+
+
+func spawn_asteroid() -> void:
+    var spawn_position: Vector2 = get_random_edge_spawn_position()
+    var instance: Node2D = asteroid.instantiate()
+    instance.global_position = spawn_position
+    # TODO: change global_rotation to go toward center/player?

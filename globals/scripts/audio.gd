@@ -52,3 +52,34 @@ func play_sound(sound: AudioStream, only: bool = false) -> void:
         sound_player.stop()
     sound_player.stream = sound
     sound_player.play()
+
+
+# TODO: Player 
+func player_hit_sfx() -> void:
+    pass
+
+
+func player_shoot_sfx() -> void:
+    pass
+
+
+func player_died_sfx() -> void:
+    pass
+
+
+# TODO: Asteroid
+func asteroid_hit_sfx() -> void:
+    pass
+
+
+func asteroid_died_sfx() -> void:
+    pass
+
+
+# TOOD: Game
+func play_win_sfx() -> void:
+    pass
+
+
+func play_lose_sfx() -> void:
+    pass
