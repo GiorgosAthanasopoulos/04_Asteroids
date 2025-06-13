@@ -83,3 +83,7 @@ func play_win_sfx() -> void:
 
 func play_lose_sfx() -> void:
     pass
+
+
+func play_bgm() -> void:
+    pass

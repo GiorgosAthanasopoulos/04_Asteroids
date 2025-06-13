@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://direj2fajrp"]
+[gd_scene load_steps=6 format=3 uid="uid://direj2fajrp"]
 
 [ext_resource type="Script" uid="uid://bdkgjvp6es4sp" path="res://levels/game/scripts/game.gd" id="1_2oeyt"]
 [ext_resource type="PackedScene" uid="uid://j2da0afv1n12" path="res://characters/player/player.tscn" id="1_sg147"]
 [ext_resource type="PackedScene" uid="uid://qbfxu0qmmgfk" path="res://ui/components/bg/bg.tscn" id="2_6ojey"]
 [ext_resource type="Script" uid="uid://5k4vnmafdb38" path="res://levels/game/scripts/escape_menu.gd" id="3_71jyj"]
+[ext_resource type="Script" uid="uid://csoxuxe352oka" path="res://levels/game/scripts/win_lose_menu.gd" id="5_0axs7"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_2oeyt")
@@ -11,7 +12,7 @@ script = ExtResource("1_2oeyt")
 [node name="UI" type="Node2D" parent="."]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="UI"]
-layer = -1
+layer = -2
 
 [node name="ColorRect" type="ColorRect" parent="UI/CanvasLayer"]
 anchors_preset = 15
@@ -97,7 +98,54 @@ text = "Quit to Main Menu"
 layout_mode = 2
 text = "Quit to Desktop"
 
+[node name="WinLoseMenu" type="Node2D" parent="."]
+script = ExtResource("5_0axs7")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="WinLoseMenu"]
+layer = -1
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="WinLoseMenu/CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0.717647)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="WinLoseMenu/CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+
+[node name="WinLostLabel" type="Label" parent="WinLoseMenu/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "You won!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RestartButton" type="Button" parent="WinLoseMenu/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "Restart"
+
+[node name="MainMenuButton" type="Button" parent="WinLoseMenu/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "Quit to Main Menu"
+
+[node name="QuitToDesktopButton" type="Button" parent="WinLoseMenu/CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "Quit to Desktop"
+
 [connection signal="pressed" from="EscapeMenu/CanvasLayer/VBoxContainer/ResumeButton" to="EscapeMenu" method="_on_resume_button_pressed"]
 [connection signal="pressed" from="EscapeMenu/CanvasLayer/VBoxContainer/SettingsButton" to="EscapeMenu" method="_on_settings_button_pressed"]
 [connection signal="pressed" from="EscapeMenu/CanvasLayer/VBoxContainer/QuitToMenuButton" to="EscapeMenu" method="_on_quit_to_menu_button_pressed"]
 [connection signal="pressed" from="EscapeMenu/CanvasLayer/VBoxContainer/QuitToDesktopButton" to="EscapeMenu" method="_on_quit_to_desktop_button_pressed"]
+[connection signal="pressed" from="WinLoseMenu/CanvasLayer/VBoxContainer/RestartButton" to="WinLoseMenu" method="_on_restart_button_pressed"]
+[connection signal="pressed" from="WinLoseMenu/CanvasLayer/VBoxContainer/MainMenuButton" to="WinLoseMenu" method="_on_main_menu_button_pressed"]
+[connection signal="pressed" from="WinLoseMenu/CanvasLayer/VBoxContainer/QuitToDesktopButton" to="WinLoseMenu" method="_on_quit_to_desktop_button_pressed"]
