@@ -6,13 +6,31 @@ const MUSIC_BUS: String = 'Music'
 const SFX_BUS: String = 'SFX'
 
 
-@onready var music_player: AudioStreamPlayer = AudioStreamPlayer.new()
-@onready var sound_player: AudioStreamPlayer = AudioStreamPlayer.new()
+@export var player_shoot_sound: AudioStreamWAV = preload('res://assets/sounds/player/shoot/source/522095__magnuswaker__energy-riser.wav')
+@export var player_hit_sound: AudioStreamWAV = preload('res://assets/sounds/player/hit/wav/725542__whatchar__dsgnimpt_sci-fimpact61_whatley_impacts.wav')
+
+@export var game_lose_sound: AudioStreamMP3 = preload('res://assets/sounds/game/lose/source/792355__diasyl__sci-fi-soldier-death.mp3')
+@export var game_win_sound: AudioStreamWAV = preload('res://assets/sounds/game/win/source/270545__littlerobotsoundfactory__jingle_win_01.wav')
+@export var game_bgm: AudioStreamWAV = preload('res://assets/music/bgm/source/231254__foolboymedia__action-theme.wav')
+
+@export var asteroid_died_sound: AudioStreamWAV = preload('res://assets/sounds/asteroid/died/source/331156__robinhood76__06167-magnetic-destroy-shot.wav')
+
+@export var global_enable: bool = false
+
+
+@onready var music_player: AudioStreamPlayer
+@onready var sound_player: AudioStreamPlayer
 
 
 func _ready() -> void:
+    music_player = AudioStreamPlayer.new()
+    sound_player = AudioStreamPlayer.new()
+
     music_player.bus = MUSIC_BUS
     sound_player.bus = SFX_BUS
+
+    get_tree().current_scene.add_child(music_player)
+    get_tree().current_scene.add_child(sound_player)
 
 
 # Master
@@ -34,6 +52,9 @@ func set_music_volume(volume_db: float) -> void:
 
 
 func play_music(music: AudioStream) -> void:
+    if not global_enable:
+        return
+
     music_player.stream = music
     music_player.play()
 
@@ -48,42 +69,54 @@ func set_sound_volume(volume_db: float) -> void:
 
 
 func play_sound(sound: AudioStream, only: bool = false) -> void:
+    if not global_enable:
+        return
+
     if only:
         sound_player.stop()
     sound_player.stream = sound
     sound_player.play()
 
 
-# TODO: Player 
+# Player 
 func player_hit_sfx() -> void:
-    pass
+    play_sound(player_hit_sound)
 
 
 func player_shoot_sfx() -> void:
-    pass
+    play_sound(player_shoot_sound)
 
 
 func player_died_sfx() -> void:
+    # We already play lose sound
     pass
 
 
-# TODO: Asteroid
+func player_hyperspace_wrap_sfx() -> void:
+    pass
+
+
+func player_powerup_sfx() -> void:
+    pass
+
+
+# Asteroid
 func asteroid_hit_sfx() -> void:
-    pass
+    play_sound(player_hit_sound)
 
 
 func asteroid_died_sfx() -> void:
-    pass
+    play_sound(asteroid_died_sound)
 
 
-# TOOD: Game
+# Game
 func play_win_sfx() -> void:
-    pass
+    play_sound(game_win_sound, true)
 
 
 func play_lose_sfx() -> void:
-    pass
+    play_sound(game_lose_sound, true)
 
 
 func play_bgm() -> void:
-    pass
+    play_music(game_bgm)

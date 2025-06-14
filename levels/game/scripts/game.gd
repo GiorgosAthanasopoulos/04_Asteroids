@@ -1,20 +1,33 @@
 extends Node2D
 
 
-@export var asteroid: PackedScene = preload('res://objects/asteroid/asteroid.tscn')
-@export var asteroid_spawn_delay: Vector2 = Vector2(0.1, 1) # min, max
+@export var asteroid: PackedScene = preload('res://characters/asteroid/asteroid.tscn')
+@export var asteroid_spawn_delay: Vector2 = Vector2(2, 4) # min, max
 @export var max_score: int = 200
+@export var max_asteroids_in_screen: int = 15
+
+@export var saucer: PackedScene = preload('res://characters/saucer/saucer.tscn')
+@export var saucer_spawn_delay: Vector2 = Vector2(10, 30) # min, max
+
+@export var infinite_reload_powerup: PackedScene = preload('res://powerups/infinite_reload/infinite_reload.tscn')
+@export var powerup_spawn_delay: float = 15 # seconds
+@export var powerups: Array[PackedScene] = [infinite_reload_powerup]
 
 
 @onready var lifes_label: Label = $UI/CanvasLayer/LifesLabel
 @onready var score_label: Label = $UI/CanvasLayer/ScoreLabel
 @onready var escape_menu: CanvasLayer = $EscapeMenu/CanvasLayer
 @onready var win_lost_menu: CanvasLayer = $WinLoseMenu/CanvasLayer
+@onready var win_lose_label: Label = $WinLoseMenu/CanvasLayer/VBoxContainer/WinLostLabel
 
 
 var _player_lifes: int = 3
 var _score: int = 0
 var _asteroid_spawn_timer: float = 0
+var _saucer_spawn_timer: float = 0
+var _asteroid_counter: int = 0
+var _powerup_timer: float = powerup_spawn_delay
+var _saucer_active: bool = false
 
 
 func _ready() -> void:
@@ -26,7 +39,13 @@ func _ready() -> void:
     if err != OK:
         print("Failed to connect asteroid_hit in game.gd: ", error_string(err))
 
+    err = Events.saucer_died.connect(_on_saucer_died) as Error
+    if err != OK:
+        print("Failed to connect saucer_died in game.gd: ", error_string(err))
+
     Audio.play_bgm()
+
+    _saucer_spawn_timer = randf_range(saucer_spawn_delay.x, saucer_spawn_delay.y)
 
 
 func _process(delta: float) -> void:
@@ -34,7 +53,12 @@ func _process(delta: float) -> void:
         State.paused = not State.paused
         escape_menu.visible = State.paused
 
+    if State.paused:
+        return
+
     handle_asteroid_spawning(delta)
+    handle_powerup_spawning(delta)
+    handle_saucer_spawning(delta)
 
 
 func _on_player_hit() -> void:
@@ -42,14 +66,19 @@ func _on_player_hit() -> void:
     lifes_label.text = 'Lifes: ' + str(_player_lifes)
     
     if _player_lifes <= 0:
-        Audio.play_lose_sfx()
         Events.player_died.emit()
+        Audio.play_lose_sfx()
+        State.paused = not State.paused
+        win_lost_menu.visible = State.paused
+        win_lose_label.text = 'You lost!'
 
 
 func _on_asteroid_died(score: int) -> void:
     _score += score
     score_label.text = 'Score: ' + str(_score)
+
     if score >= max_score:
+        Audio.play_win_sfx()
         State.paused = true
         win_lost_menu.visible = true
 
@@ -77,12 +106,80 @@ func spawn_asteroid() -> void:
     var spawn_position: Vector2 = get_random_edge_spawn_position()
     var instance: Node2D = asteroid.instantiate()
     instance.global_position = spawn_position
-    # TODO: change global_rotation to go toward center/player?
+    instance.name = 'Asteroid' + str(_asteroid_counter)
+    _asteroid_counter += 1
+    var player: Node2D = get_node('Entities/Player')
+    if player == null:
+        print('player is null, spawn_asteroid, game')
+        return
+    instance.global_rotation = player.global_rotation
+    get_tree().current_scene.add_child(instance)
 
 
 func handle_asteroid_spawning(delta: float) -> void:
     _asteroid_spawn_timer -= delta
 
-    if _asteroid_spawn_timer <= 0:
+    if _asteroid_spawn_timer <= 0 and count_asteroids_on_screen() < max_asteroids_in_screen:
         _asteroid_spawn_timer = randf_range(asteroid_spawn_delay.x, asteroid_spawn_delay.y)
         spawn_asteroid()
+
+
+func handle_powerup_spawning(delta: float) -> void:
+    _powerup_timer -= delta
+
+    if _powerup_timer <= 0:
+        _powerup_timer = powerup_spawn_delay
+        spawn_powerup()
+
+
+func spawn_powerup() -> void:
+    var powerup_number: int = randi_range(0, len(powerups) - 1)
+    var powerup: PackedScene = powerups[powerup_number]
+    var instance: Node2D = powerup.instantiate()
+
+    var viewport_size: Vector2 = get_viewport_rect().size
+    var spawn_position: Vector2 = Vector2.ZERO
+    spawn_position.x = randi_range(0, int(viewport_size.x))
+    spawn_position.y = randi_range(0, int(viewport_size.y))
+    instance.global_position = spawn_position
+
+    get_tree().current_scene.add_child(instance)
+
+
+func handle_saucer_spawning(delta: float) -> void:
+    if _saucer_active:
+        return
+
+    _saucer_spawn_timer -= delta
+
+    if _asteroid_spawn_timer <= 0:
+        _saucer_spawn_timer = randf_range(saucer_spawn_delay.x, saucer_spawn_delay.y)
+        _saucer_active = true
+        spawn_saucer()
+
+
+func spawn_saucer() -> void:
+    var instance: Node2D = saucer.instantiate()
+
+    var spawn_position: Vector2 = get_random_edge_spawn_position()
+    instance.global_position = spawn_position
+
+    instance.name = 'Asteroid' + str(_asteroid_counter)
+    _asteroid_counter += 1
+
+    var player: Node2D = get_node('Entities/Player')
+    if player == null:
+        print('player is null, spawn_asteroid, game')
+        return
+    instance.global_rotation = player.global_rotation
+
+    get_tree().current_scene.add_child(instance)
+
+
+func _on_saucer_died(score: int) -> void:
+    _saucer_active = false
+    _on_asteroid_died(score)
+
+
+func count_asteroids_on_screen() -> int:
+    return 0 # TODO: implement game/count_asteroids_on_screen

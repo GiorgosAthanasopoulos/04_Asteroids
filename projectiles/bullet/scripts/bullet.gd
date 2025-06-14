@@ -5,6 +5,9 @@ extends RigidBody2D
 
 
 func _physics_process(delta: float) -> void:
+    if State.paused:
+        return
+
     var movement_vector: Vector2 = Vector2.ZERO
     movement_vector.x = speed * cos(deg_to_rad(global_rotation_degrees))
     movement_vector.y = speed * sin(deg_to_rad(global_rotation_degrees))

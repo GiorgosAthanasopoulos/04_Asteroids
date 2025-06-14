@@ -1,7 +1,7 @@
 extends Node
 
 
-@export var min_mouse_distance: float = 1
+@export var min_mouse_distance: float = 10
 
 
 func get_angle_to_mouse_clockwise(player_pos: Vector2, mouse_pos: Vector2) -> float:

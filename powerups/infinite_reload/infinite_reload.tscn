@@ -1,0 +1,57 @@
+[gd_scene load_steps=9 format=3 uid="uid://vcrrkwurx8ej"]
+
+[ext_resource type="Texture2D" uid="uid://dt2illegym7xk" path="res://assets/sprites/powerups/infinite_reload/infinite_reload.png" id="1_cnudj"]
+[ext_resource type="Script" uid="uid://xe2tkurhccn1" path="res://powerups/infinite_reload/scripts/infinite_reload.gd" id="1_xg7f4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v1hfd"]
+size = Vector2(16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cnudj"]
+atlas = ExtResource("1_cnudj")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xg7f4"]
+atlas = ExtResource("1_cnudj")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ugrxs"]
+atlas = ExtResource("1_cnudj")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ompi8"]
+atlas = ExtResource("1_cnudj")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_xg7f4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cnudj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xg7f4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ugrxs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ompi8")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="InfiniteReload" type="StaticBody2D"]
+scale = Vector2(2.5, 2.5)
+collision_layer = 8
+script = ExtResource("1_xg7f4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_v1hfd")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_xg7f4")
+frame = 1
+frame_progress = 0.402345
