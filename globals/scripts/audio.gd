@@ -8,6 +8,7 @@ const SFX_BUS: String = 'SFX'
 
 @export var player_shoot_sound: AudioStreamWAV = preload('res://assets/sounds/player/shoot/source/522095__magnuswaker__energy-riser.wav')
 @export var player_hit_sound: AudioStreamWAV = preload('res://assets/sounds/player/hit/wav/725542__whatchar__dsgnimpt_sci-fimpact61_whatley_impacts.wav')
+@export var player_hypspace_wrap_sound: AudioStreamWAV = preload('res://assets/sounds/player/hyprspace wrap/trimmed/9087__tigersound__hyperspace.wav')
 
 @export var game_lose_sound: AudioStreamMP3 = preload('res://assets/sounds/game/lose/source/792355__diasyl__sci-fi-soldier-death.mp3')
 @export var game_win_sound: AudioStreamWAV = preload('res://assets/sounds/game/win/source/270545__littlerobotsoundfactory__jingle_win_01.wav')
@@ -15,22 +16,21 @@ const SFX_BUS: String = 'SFX'
 
 @export var asteroid_died_sound: AudioStreamWAV = preload('res://assets/sounds/asteroid/died/source/331156__robinhood76__06167-magnetic-destroy-shot.wav')
 
-@export var global_enable: bool = false
+@export var powerup_sound: AudioStreamWAV = preload('res://assets/sounds/powerup/pickedup/source/422090__profmudkip__8-bit-powerup-2.wav')
+
+@export var global_enable: bool = true
 
 
-@onready var music_player: AudioStreamPlayer
-@onready var sound_player: AudioStreamPlayer
+@onready var music_player: AudioStreamPlayer = AudioStreamPlayer.new()
+@onready var sound_player: AudioStreamPlayer = AudioStreamPlayer.new()
 
 
 func _ready() -> void:
-    music_player = AudioStreamPlayer.new()
-    sound_player = AudioStreamPlayer.new()
+    add_child(music_player)
+    add_child(sound_player)
 
     music_player.bus = MUSIC_BUS
     sound_player.bus = SFX_BUS
-
-    get_tree().current_scene.add_child(music_player)
-    get_tree().current_scene.add_child(sound_player)
 
 
 # Master
@@ -93,11 +93,11 @@ func player_died_sfx() -> void:
 
 
 func player_hyperspace_wrap_sfx() -> void:
-    pass
+    play_sound(player_hypspace_wrap_sound)
 
 
 func player_powerup_sfx() -> void:
-    pass
+    play_sound(powerup_sound)
 
 
 # Asteroid

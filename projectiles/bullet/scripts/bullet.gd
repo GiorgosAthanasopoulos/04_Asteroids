@@ -25,5 +25,3 @@ func handle_collision(collision: KinematicCollision2D) -> void:
     var collider: PhysicsBody2D = collision.get_collider()
     if not is_instance_valid(collider):
         return
-
-    queue_free()

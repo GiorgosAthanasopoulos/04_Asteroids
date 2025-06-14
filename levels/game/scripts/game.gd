@@ -7,11 +7,13 @@ extends Node2D
 @export var max_asteroids_in_screen: int = 15
 
 @export var saucer: PackedScene = preload('res://characters/saucer/saucer.tscn')
-@export var saucer_spawn_delay: Vector2 = Vector2(10, 30) # min, max
+@export var saucer_spawn_delay: Vector2 = Vector2(15, 20) # min, max
 
 @export var infinite_reload_powerup: PackedScene = preload('res://powerups/infinite_reload/infinite_reload.tscn')
+@export var shield_powerup: PackedScene = preload('res://powerups/shield/shield_powerup.tscn')
 @export var powerup_spawn_delay: float = 15 # seconds
-@export var powerups: Array[PackedScene] = [infinite_reload_powerup]
+@export var powerups: Array[PackedScene] = [infinite_reload_powerup, shield_powerup]
+@export var max_powerups_on_screen: int = 3
 
 
 @onready var lifes_label: Label = $UI/CanvasLayer/LifesLabel
@@ -28,6 +30,7 @@ var _saucer_spawn_timer: float = 0
 var _asteroid_counter: int = 0
 var _powerup_timer: float = powerup_spawn_delay
 var _saucer_active: bool = false
+var _saucer_counter: int = 0
 
 
 func _ready() -> void:
@@ -79,8 +82,8 @@ func _on_asteroid_died(score: int) -> void:
 
     if score >= max_score:
         Audio.play_win_sfx()
-        State.paused = true
-        win_lost_menu.visible = true
+        State.paused = not State.paused
+        win_lost_menu.visible = State.paused
 
 
 func get_random_edge_spawn_position() -> Vector2:
@@ -127,7 +130,7 @@ func handle_asteroid_spawning(delta: float) -> void:
 func handle_powerup_spawning(delta: float) -> void:
     _powerup_timer -= delta
 
-    if _powerup_timer <= 0:
+    if _powerup_timer <= 0 and count_powerups_on_screen() < max_powerups_on_screen:
         _powerup_timer = powerup_spawn_delay
         spawn_powerup()
 
@@ -152,7 +155,7 @@ func handle_saucer_spawning(delta: float) -> void:
 
     _saucer_spawn_timer -= delta
 
-    if _asteroid_spawn_timer <= 0:
+    if _saucer_spawn_timer <= 0:
         _saucer_spawn_timer = randf_range(saucer_spawn_delay.x, saucer_spawn_delay.y)
         _saucer_active = true
         spawn_saucer()
@@ -164,12 +167,12 @@ func spawn_saucer() -> void:
     var spawn_position: Vector2 = get_random_edge_spawn_position()
     instance.global_position = spawn_position
 
-    instance.name = 'Asteroid' + str(_asteroid_counter)
-    _asteroid_counter += 1
+    instance.name = 'Saucer ' + str(_saucer_counter)
+    _saucer_counter += 1
 
     var player: Node2D = get_node('Entities/Player')
     if player == null:
-        print('player is null, spawn_asteroid, game')
+        print('player is null, spawn_saucer, game')
         return
     instance.global_rotation = player.global_rotation
 
@@ -190,4 +193,17 @@ func count_asteroids_on_screen(root: Node = get_tree().get_current_scene()) -> i
     for child: Node in root.get_children():
         count += count_asteroids_on_screen(child)
 
-    return count # TODO: implement game/count_asteroids_on_screen
+    return count
+
+
+func count_powerups_on_screen(root: Node = get_tree().get_current_scene()) -> int:
+    var count: int = 0
+
+    if root.scene_file_path == infinite_reload_powerup.resource_path or \
+       root.scene_file_path == shield_powerup.resource_path:
+        count += 1
+
+    for child: Node in root.get_children():
+        count += count_powerups_on_screen(child)
+
+    return count

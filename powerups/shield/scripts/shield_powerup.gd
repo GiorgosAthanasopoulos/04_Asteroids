@@ -1,7 +1,11 @@
 extends StaticBody2D
 
 
-@export var active_time: float = 5 # seconds
+@export var active_time: float = 10 # seconds
+
+
+func _ready() -> void:
+    print('shield')
 
 
 func _process(_delta: float) -> void:
@@ -18,5 +22,5 @@ func handle_collisions(collision: KinematicCollision2D) -> void:
         return
 
     assert(collider.collision_layer == 1)
-    Events.infinite_reload_powerup.emit(active_time)
+    Events.shield_powerup.emit(active_time)
     queue_free()

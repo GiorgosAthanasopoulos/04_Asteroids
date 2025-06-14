@@ -18,7 +18,7 @@ var _speed: Vector2
 var _shoot_timer: float = 0
 var _bullet_counter: int = 0
 var _wrap_timer: float = 0
-var _powerup: int = -1 # -1 no powerup, 0 infinite reload
+var _powerup: int = -1 # -1 no powerup, 0 infinite reload, 1 shield
 var _powerup_timer: float = 0
 
 
@@ -30,6 +30,10 @@ func _ready() -> void:
 	err = Events.infinite_reload_powerup.connect(_on_infinite_reload_powerup) as Error
 	if err != OK:
 		print("Failed to connect infinite_reload_powerup signal in player.gd: ", error_string(err))
+
+	err = Events.shield_powerup.connect(_on_shield_powerup) as Error
+	if err != OK:
+		print("Failed to connect shield powerup in player.gd: ", error_string(err))
 
 
 func _physics_process(delta: float) -> void:
@@ -76,6 +80,12 @@ func handle_collision(collision: KinematicCollision2D) -> void:
 	var collider: PhysicsBody2D = collision.get_collider()
 	if not is_instance_valid(collider):
 		return
+
+	if _powerup != 1:
+		print('hit')
+		Events.player_hit.emit()
+		return
+	print('shield')
 
 
 func handle_shooting(delta: float) -> void:
@@ -152,3 +162,9 @@ func handle_powerups(delta: float) -> void:
 
 	if _powerup_timer <= 0:
 		_powerup = -1
+
+
+func _on_shield_powerup(active_time: float) -> void:
+	Audio.player_powerup_sfx()
+	_powerup = 1
+	_powerup_timer = active_time

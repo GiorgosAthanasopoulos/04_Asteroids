@@ -39,9 +39,11 @@ func handle_collision(collision: KinematicCollision2D) -> void:
 		return
 
 	if collider.collision_layer == 1:
-		Events.player_hit.emit()
+		print('asteroid hit by player')
 		die()
 	if collider.collision_layer == 2:
+		collider.queue_free()
+		print('asteroid hit by bullet')
 		animated_sprite.frame += 1 if animated_sprite.frame + 1 < 3 else -2
 		lifes -= 1
 		if lifes <= 0:

@@ -1,13 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://d0ronqgii8bew"]
+[gd_scene load_steps=4 format=3 uid="uid://d0ronqgii8bew"]
+
+[ext_resource type="Script" uid="uid://dl7ituqmwpe45" path="res://powerups/shield/scripts/shield_powerup.gd" id="1_61nke"]
+[ext_resource type="Texture2D" uid="uid://bh3nma8j4415y" path="res://assets/sprites/powerups/shield/shield.png" id="1_sn2w6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e1ndr"]
 size = Vector2(16, 16)
 
 [node name="ShieldPowerup" type="StaticBody2D"]
+texture_filter = 1
 scale = Vector2(2.5, 2.5)
 collision_layer = 8
+script = ExtResource("1_61nke")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_e1ndr")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_sn2w6")

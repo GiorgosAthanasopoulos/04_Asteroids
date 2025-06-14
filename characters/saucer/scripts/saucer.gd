@@ -4,15 +4,22 @@ extends RigidBody2D
 @export var speed: float = 200
 @export var kill_score: int = 30
 @export var my_scale: Vector2 = Vector2(1, 1)
+@export var shooting_delay: float = 2 # seconds
+@export var bullet: PackedScene = preload('res://projectiles/bullet/bullet.tscn')
 
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
 
 
+var _shooting_timer: float = 0
+var _bullet_counter: int = 0
+
+
 func _ready() -> void:
 	sprite.scale = my_scale
 	collision_shape.scale = my_scale
+	print('saucer')
 
 
 func _physics_process(delta: float) -> void:
@@ -25,6 +32,7 @@ func _physics_process(delta: float) -> void:
 	var collision: KinematicCollision2D = move_and_collide(movement_vector * delta)
 	handle_collision(collision)
 	handle_screen_wrap()
+	handle_shooting(delta)
 
 
 func handle_collision(collision: KinematicCollision2D) -> void:
@@ -36,8 +44,10 @@ func handle_collision(collision: KinematicCollision2D) -> void:
 		return
 
 	if collider.collision_layer == 1:
+		print('saucer hit by player')
 		Events.player_hit.emit()
 
+	print('saucer died')
 	die()
 
 
@@ -69,3 +79,21 @@ func handle_screen_wrap() -> void:
 		global_position.y = screen_size.y
 	elif global_position.y > screen_size.y:
 		global_position.y = 0
+
+
+func handle_shooting(delta: float) -> void:
+	_shooting_timer -= delta
+
+	if _shooting_timer <= 0:
+		_shooting_timer = shooting_delay
+		shoot()
+
+
+func shoot() -> void:
+	var instance: RigidBody2D = bullet.instantiate()
+	instance.name = "Bullet" + str(_bullet_counter)
+	_bullet_counter += 1
+	instance.global_position = global_position
+	instance.global_rotation_degrees = global_rotation_degrees - 90
+	get_tree().current_scene.add_child(instance)
+	Audio.player_shoot_sfx()

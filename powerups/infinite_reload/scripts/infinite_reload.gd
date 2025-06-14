@@ -4,6 +4,10 @@ extends StaticBody2D
 @export var active_time: float = 3 # seconds
 
 
+func _ready() -> void:
+    print('infinite reload')
+
+
 func _process(_delta: float) -> void:
     var collision: KinematicCollision2D = move_and_collide(Vector2.ZERO)
     handle_collisions(collision)
