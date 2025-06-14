@@ -134,7 +134,7 @@ func handle_hyperspace_wrap(delta: float) -> void:
 
 
 func hyperspace_wrap() -> void:
-	Particles.spawn_explosives(global_position, global_rotation)
+	Particles.spawn_implosion(global_position, global_rotation)
 	var viewport_size: Vector2 = get_viewport_rect().size
 	var random_x: int = randi_range(0, int(viewport_size.x))
 	var random_y: int = randi_range(0, int(viewport_size.y))

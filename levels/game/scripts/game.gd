@@ -181,5 +181,13 @@ func _on_saucer_died(score: int) -> void:
     _on_asteroid_died(score)
 
 
-func count_asteroids_on_screen() -> int:
-    return 0 # TODO: implement game/count_asteroids_on_screen
+func count_asteroids_on_screen(root: Node = get_tree().get_current_scene()) -> int:
+    var count: int = 0
+
+    if root.scene_file_path == asteroid.resource_path:
+        count += 1
+
+    for child: Node in root.get_children():
+        count += count_asteroids_on_screen(child)
+
+    return count # TODO: implement game/count_asteroids_on_screen
